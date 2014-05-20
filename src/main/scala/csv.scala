@@ -1,6 +1,7 @@
 object CSV {
   def main(args: Array[String]) {
-    val parsed: Seq[String] = parse("""test,"st,ri,ng",123""")
+    val parsed: Seq[String] = parse("""test,"st,ri,ng",,123""")
+    println(parsed.size)
   }
 
   def parse(line: String) : Seq[String] = {
@@ -10,12 +11,15 @@ object CSV {
     var inExtendedCol: Boolean = false
 
     val parts: Seq[String] = line.split(',')
+    println(parts)
+    parts.foreach(part => println(part))
 
 
     // pattern
     //   "st,ri,ng"
     //   "string"
     //   string
+    //   ""(blank)
     parts.foreach(part => {
       if (inExtendedCol) {
         // cases: ri, ng"
@@ -29,6 +33,8 @@ object CSV {
           csv = lastUpdate(csv, part)
           csv = lastUpdate(csv, colSep)
         }
+      } else if (part.isEmpty) {
+        csv = csv :+ ""
       } else if(part(0) == quote) {
         // cases: "st, "string"
         if (part.last != quote || part.count(_.toString == "\"") % 2 != 0) {
@@ -43,7 +49,7 @@ object CSV {
         }
       } else {
         // case: string
-        csv = csv :+ (if (part.isEmpty) "" else part)
+        csv = csv :+ part
       }
     })
     println(csv)
