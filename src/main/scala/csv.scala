@@ -1,9 +1,4 @@
-object CSV {
-  def main(args: Array[String]) {
-    val parsed: Seq[String] = parse("""test,"st,ri,ng",,123""")
-    println(parsed.size)
-  }
-
+object Csv {
   def parse(line: String) : Seq[String] = {
     val quote: Char = '"'
     val colSep: Char = ','
@@ -44,8 +39,7 @@ object CSV {
           inExtendedCol = true
         } else {
           // case: "string"
-          csv = csv :+ part.tail
-          csv = lastUpdate(csv, colSep)
+          csv = csv :+ part.init.tail
         }
       } else {
         // case: string
