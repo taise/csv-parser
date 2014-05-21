@@ -1,3 +1,5 @@
+package com.github.taise.csv
+
 object Csv {
   def parse(line: String) : Seq[String] = {
     val quote: Char = '"'
@@ -6,10 +8,6 @@ object Csv {
     var inExtendedCol: Boolean = false
 
     val parts: Seq[String] = line.split(',')
-    println(parts)
-    parts.foreach(part => println(part))
-
-
     // pattern
     //   "st,ri,ng"
     //   "string"
@@ -46,7 +44,6 @@ object Csv {
         csv = csv :+ part
       }
     })
-    println(csv)
     csv
   }
 

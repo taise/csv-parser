@@ -1,4 +1,4 @@
-import Csv._
+import com.github.taise.csv._
 import org.scalatest._
 
 class CsvSpec extends FlatSpec with ShouldMatchers {
