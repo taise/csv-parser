@@ -3,6 +3,7 @@ package com.github.taise.csv
 object Csv {
   def parse(line: String) : Seq[String] = {
     val quote: Char = '"'
+    val quoteS: String = quote.toString
     val colSep: Char = ','
     var csv = Seq[String]()
     var inExtendedCol: Boolean = false
@@ -41,7 +42,7 @@ object Csv {
         }
       } else {
         // case: string
-        csv = csv :+ part
+        csv = csv :+ part.replaceAll(quoteS * 2, quoteS)
       }
     })
     csv

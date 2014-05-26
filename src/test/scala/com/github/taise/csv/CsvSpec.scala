@@ -40,4 +40,11 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     res(1) should be("include,comma")
     res(2) should be("def")
   }
+
+  it should "parse csv text escaped quote" in {
+    val csvText: String = """abc""def"""
+    val res: Seq[String] = Csv.parse(csvText)
+    res.size should be(1)
+    res(0) should be("""abc"def""")
+  }
 }
