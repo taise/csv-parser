@@ -38,7 +38,7 @@ object Csv {
           inExtendedCol = true
         } else {
           // case: "string"
-          csv = csv :+ part.init.tail
+          csv = csv :+ part.init.tail.replaceAll(quoteS * 2, quoteS)
         }
       } else {
         // case: string
