@@ -47,4 +47,10 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     res.size should be(1)
     res(0) should be("""abc"def""")
   }
+
+  it should "parse csv text include newline" in {
+    val csvText: String = """foo,"\r\n",baz"""
+    val res: Seq[String] = Csv.parse(csvText)
+    res(1) should be("""\r\n""")
+  }
 }
