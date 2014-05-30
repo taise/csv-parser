@@ -5,15 +5,40 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
 
   "Csv" should "be able to parse" in {
     Seq(
-      Map("abcdef"               -> Seq("abcdef")),             // a single string
-      Map("\t"                   -> Seq("\t")),                 // a tab
-      Map("foo,\"\"\"\"\"\",baz" -> Seq("foo", "\"\"", "baz")), // quotations
-      Map("abc,def"              -> Seq("abc", "def")),         // simple csv text
-      Map(""""abc","def""""      -> Seq("abc", "def")),         // put quotations
-      Map("""a,",",b"""          -> Seq("a", ",", "b")),        // include comma between quote
-      Map("""a""b"""             -> Seq("""a"b""")),            // escaped quote
-      Map("""a\r\nb"""           -> Seq("""a\r\nb""")),         // include newline
-      Map("abc,,def"             -> Seq("abc", "", "def"))      // include blank
+      Map("abcdef"                  -> Seq("abcdef")),
+      Map("\t"                      -> Seq("\t")),
+      Map("foo,\"\"\"\"\"\",baz"    -> Seq("foo", "\"\"", "baz")),
+      Map("foo,\"\"\"bar\"\"\",baz" -> Seq("foo", "\"bar\"", "baz")),
+      Map("\"\"\"\n\",\"\"\"\n\""   -> Seq("\"\n", "\"\n")),
+      Map("foo,\"\r\n\",baz"        -> Seq("foo", "\r\n", "baz")),
+      Map("\"\""                    -> Seq("")),
+      Map("foo,\"\"\"\",baz"        -> Seq("foo", "\"", "baz")),
+      Map("abc,def"                 -> Seq("abc", "def")),
+      Map(""""abc","def""""         -> Seq("abc", "def")),
+      Map("""a,",",b"""             -> Seq("a", ",", "b")),
+      Map("""a""b"""                -> Seq("""a"b""")),
+      Map("""a\r\nb"""              -> Seq("""a\r\nb""")),
+      Map("abc,,def"                -> Seq("abc", "", "def")),
+      Map("foo,\"\r.\n\",baz"       -> Seq("foo", "\r.\n", "baz")),
+      Map("foo,\"\r\",baz"          -> Seq("foo", "\r", "baz")),
+      Map("foo,\"\",baz"            -> Seq("foo", "", "baz")),
+      Map("\",\""                   -> Seq(",")),
+      Map("foo"                     -> Seq("foo")),
+      Map(",,"                      -> Seq("", "", "")),
+      Map(","                       -> Seq("", "")),
+      Map("foo,\"\n\",baz"          -> Seq("foo", "\n", "baz")),
+      Map("foo,,baz"                -> Seq("foo", "", "baz")),
+      Map("\"\"\"\r\",\"\"\"\r\""   -> Seq("\"\r", "\"\r")),
+      Map("\",\",\",\""             -> Seq(",", ",")),
+      Map("foo,bar,"                -> Seq("foo", "bar", "")),
+      Map(",foo,bar"                -> Seq("", "foo", "bar")),
+      Map("foo,bar"                 -> Seq("foo", "bar")),
+      Map(";"                       -> Seq(";")),
+      Map("	,	"                     -> Seq("\t", "\t")),
+      Map("foo,\"\r\n\r\",baz"      -> Seq("foo", "\r\n\r", "baz")),
+      Map("foo,\"\r\n\n\",baz"      -> Seq("foo", "\r\n\n", "baz")),
+      Map("foo,\"foo,bar\",baz"     -> Seq("foo", "foo,bar", "baz")),
+      Map(";,;"                     -> Seq(";", ";"))
     ).foreach { xs =>
       xs.foreach { kv =>
         val (k, v) = kv
