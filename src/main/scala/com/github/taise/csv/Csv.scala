@@ -33,7 +33,7 @@ object Csv {
         // cases: "st, "string"
         if (part.last != quote || part.count(_.toString == "\"") % 2 != 0) {
           // case: "st
-          csv = csv :+ part.tail
+          csv = csv :+ part.tail.replaceAll(quoteS * 2, quoteS)
           csv = lastUpdate(csv, colSep)
           inExtendedCol = true
         } else {

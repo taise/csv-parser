@@ -3,6 +3,14 @@ import org.scalatest._
 
 class CsvSpec extends FlatSpec with ShouldMatchers {
 
+  "CSV" should "master regex example" in {
+    val ex:String = """Ten Thousand,10000, 2710 ,,"10,000","It's ""10 Grand"", baby",10K"""
+    val expect:Seq[String]
+      =  Seq("Ten Thousand", "10000", " 2710 ", "",
+             "10,000", "It's \"10 Grand\", baby", "10K")
+    Csv.parse(ex) should be(expect)
+  }
+
   "Csv" should "be able to parse" in {
     Seq(
       Map("abcdef"                  -> Seq("abcdef")),
