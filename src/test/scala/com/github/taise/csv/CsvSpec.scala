@@ -11,7 +11,7 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     Csv.parse(ex) should be(expect)
   }
 
-  "Csv" should "be able to parse" in {
+  it should "be able to parse" in {
     Seq(
       Map("abcdef"                  -> Seq("abcdef")),
       Map("\t"                      -> Seq("\t")),
@@ -53,5 +53,30 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
         Csv.parse(k) should be(v)
       }
     }
+
+    Seq(
+      Map("foo,\"\"\"\"\"\",baz"    -> Seq("foo", "\"\"", "baz")),
+      Map("foo,\"\"\"bar\"\"\",baz" -> Seq("foo", "\"bar\"", "baz")),
+      Map("foo,\"\r\n\",baz"        -> Seq("foo", "\r\n", "baz")),
+      Map("\"\""                    -> Seq("")),
+      Map("foo,\"\"\"\",baz"        -> Seq("foo", "\"", "baz")),
+      Map("foo,\"\r.\n\",baz"       -> Seq("foo", "\r.\n", "baz")),
+      Map("foo,\"\r\",baz"          -> Seq("foo", "\r", "baz")),
+      Map("foo,\"\",baz"            -> Seq("foo", "", "baz")),
+      Map("foo"                     -> Seq("foo")),
+      Map(",,"                      -> Seq("", "", "")),
+      Map(","                       -> Seq("", "")),
+      Map("foo,\"\n\",baz"          -> Seq("foo", "\n", "baz")),
+      Map("foo,,baz"                -> Seq("foo", "", "baz")),
+      Map("foo,bar"                 -> Seq("foo", "bar")),
+      Map("foo,\"\r\n\n\",baz"      -> Seq("foo", "\r\n\n", "baz")),
+      Map("foo,\"foo,bar\",baz"     -> Seq("foo", "foo,bar", "baz")) 
+    ).foreach { xs =>
+      xs.foreach { kv =>
+        val (k, v) = kv
+        Csv.parse(k) should be(v)
+      }
+    }
   }
+
 }
