@@ -110,4 +110,24 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     Csv.parse("") should be(Seq(""))
     Csv.parse("\n123\n") should be(Seq(""))
   }
+
+  it should "be able to parse rob edge case" in {
+    Seq(
+      Map("\"a\nb\""                         -> Seq("a\nb")),
+      Map("\"\n\n\n\""                       -> Seq("\n\n\n")),
+      Map("a,\"b\n\nc\""                     -> Seq("a", "b\n\nc")),
+      Map(",\"\r\n\""                        -> Seq("","\r\n")),
+      Map(",\"\r\n.\""                       -> Seq("","\r\n.")),
+      Map("\"a\na\",\"one newline\""         -> Seq("a\na", "one newline")),
+      Map("\"a\n\na\",\"two newlines\""      -> Seq("a\n\na", "two newlines")),
+      Map("\"a\r\na\",\"one CRLF\""          -> Seq("a\r\na", "one CRLF")),
+      Map("\"a\r\n\r\na\",\"two CRLFs\""     -> Seq("a\r\n\r\na", "two CRLFs")),
+      Map("with blank,\"start\n\nfinish\"\n" -> Seq("with blank", "start\n\nfinish"))
+    ).foreach { xs =>
+      xs.foreach { kv =>
+        val (k, v) = kv
+        Csv.parse(k) should be(v)
+      }
+    }
+  }
 }

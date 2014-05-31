@@ -8,7 +8,7 @@ object Csv {
     var csv = Seq[String]()
     var inExtendedCol: Boolean = false
 
-    val parts: Seq[String] = line.split(",", -1)
+    val parts: Seq[String] = line.replaceAll("[\r\n]\\z","").split(",", -1)
     // pattern
     //   "st,ri,ng"
     //   "string"
