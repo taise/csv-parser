@@ -40,6 +40,8 @@ object Csv {
           // case: "string"
           csv = csv :+ part.init.tail.replaceAll(quoteS * 2, quoteS)
         }
+      } else if(part.startsWith("\n") || part.startsWith("\r")) {
+          csv = csv :+ ""
       } else {
         // case: string
         csv = csv :+ part.replaceAll(quoteS * 2, quoteS)

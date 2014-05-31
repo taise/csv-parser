@@ -79,4 +79,30 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     }
   }
 
+  it should "be able to parse for edge cases" in {
+    Seq(
+      Map("a,b"                     -> Seq("a", "b")),
+      Map("a,\"\"\"b\"\"\""         -> Seq("a", "\"b\"")),
+      Map("a,\"\"\"b\""             -> Seq("a", "\"b")),
+      Map("a,\"b\"\"\""             -> Seq("a", "b\"")),
+      Map("a,\"\nb\"\"\""           -> Seq("a", "\nb\"")),
+      Map("a,\"\"\"\nb\""           -> Seq("a", "\"\nb")),
+      Map("a,\"\"\"\nb\n\"\"\""     -> Seq("a", "\"\nb\n\"")),
+      Map("a,\"\"\"\nb\n\"\"\",\nc" -> Seq("a", "\"\nb\n\"", "")),
+      Map("a,,,"                    -> Seq("a", "", "", "")),
+      Map(","                       -> Seq("", "")),
+      Map("\"\",\"\""               -> Seq("", "")),
+      Map("\"\"\"\""                -> Seq("\"")),
+      Map("\"\"\"\",\"\""           -> Seq("\"","")),
+      Map(",\"\""                   -> Seq("","")),
+      Map(",\"\r\""                 -> Seq("","\r")),
+      Map("\"\r\n,\""               -> Seq("\r\n,")),
+      Map("\"\r\n,\","              -> Seq("\r\n,", ""))
+    ).foreach { xs =>
+      xs.foreach { kv =>
+        val (k, v) = kv
+        Csv.parse(k) should be(v)
+      }
+    }
+  }
 }
