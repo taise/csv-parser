@@ -105,4 +105,9 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
       }
     }
   }
+
+  it should "be able to parse for blank case" in {
+    Csv.parse("") should be(Seq(""))
+    Csv.parse("\n123\n") should be(Seq(""))
+  }
 }
