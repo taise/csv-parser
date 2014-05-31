@@ -79,7 +79,7 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     }
   }
 
-  it should "be able to parse for edge cases" in {
+  it should "be able to parse aras edge cases" in {
     Seq(
       Map("a,b"                     -> Seq("a", "b")),
       Map("a,\"\"\"b\"\"\""         -> Seq("a", "\"b\"")),
@@ -106,7 +106,7 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
     }
   }
 
-  it should "be able to parse for blank case" in {
+  it should "be able to parse james edge case" in {
     Csv.parse("") should be(Seq(""))
     Csv.parse("\n123\n") should be(Seq(""))
   }
