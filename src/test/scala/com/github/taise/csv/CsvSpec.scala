@@ -130,4 +130,13 @@ class CsvSpec extends FlatSpec with ShouldMatchers {
       }
     }
   }
+
+  it should "be able to parse non regex edge cases" in {
+    val k = "foo,\"foo,bar,baz,foo\",\"foo\""
+    val v = Seq("foo", "foo,bar,baz,foo", "foo")
+    Csv.parse(k) should be(v)
+    intercept[MalformedException] {
+      Csv.parse("1,\"23\"4\"5\", 6")
+    }
+  }
 }

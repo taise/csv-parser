@@ -5,6 +5,9 @@ object Csv {
     val quote: Char = '"'
     val quoteS: String = quote.toString
     val colSep: Char = ','
+
+    val stray_quote = ".*[^\"]+\"[^\"]+.*".r
+
     var csv = Seq[String]()
     var inExtendedCol: Boolean = false
 
@@ -27,7 +30,11 @@ object Csv {
           csv = lastUpdate(csv, colSep)
           inExtendedCol = true
         } else {
-          csv = csv :+ part.init.tail.replaceAll(quoteS * 2, quoteS)
+          val noQuote: String = part.init.tail
+          noQuote match {
+            case stray_quote() => throw new MalformedException("Missing or stray quote in line")
+            case _ => csv = csv :+ noQuote.replaceAll(quoteS * 2, quoteS)
+          }
         }
       } else if(part.startsWith("\n") || part.startsWith("\r")) {
           csv = csv :+ ""
